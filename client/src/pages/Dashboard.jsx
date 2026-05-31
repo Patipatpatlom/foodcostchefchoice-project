@@ -33,7 +33,7 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <h2 className="text-3xl font-bold text-gray-900">Dashboard</h2>
-      <p className="text-gray-500">Welcome back to KitchenManager. Here is your overview.</p>
+      <p className="text-gray-500">Welcome back to De Chef's Choice. Here is your overview.</p>
       
       {isLoading ? (
         <div className="text-gray-500">Loading your stats...</div>

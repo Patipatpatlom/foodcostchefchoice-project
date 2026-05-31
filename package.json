@@ -1,7 +1,7 @@
 {
   "name": "kitchen-management",
   "version": "1.0.0",
-  "description": "Kitchen Management SaaS",
+  "description": "De Chef's Choice SaaS",
   "private": true,
   "workspaces": [
     "client",

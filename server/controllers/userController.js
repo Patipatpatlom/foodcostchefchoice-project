@@ -38,9 +38,8 @@ export const uploadImage = async (req, res) => {
       return res.status(400).json({ error: 'No image uploaded' });
     }
 
-    // Construct the URL to the uploaded file
-    // For local storage in the "uploads" folder, we'll serve it statically
-    const imageUrl = `http://localhost:5000/uploads/${req.file.filename}`;
+    // The CloudinaryStorage engine automatically uploads the file and sets req.file.path to the secure URL
+    const imageUrl = req.file.path;
 
     const updatedUser = await prisma.user.update({
       where: { id: req.user.id },

@@ -1,4 +1,4 @@
-# Kitchen Management SaaS
+# De Chef's Choice
 
 A comprehensive web application for managing food costs, recipes, and raw ingredients in a professional kitchen environment.
 

@@ -89,7 +89,7 @@ function App() {
           <aside className="w-64 bg-gray-900 text-white flex-col hidden md:flex shadow-xl z-20 print:hidden">
             <div className="p-6 flex items-center gap-3 border-b border-gray-800">
               <ChefHat className="text-orange-500 w-8 h-8" />
-              <h1 className="text-xl font-bold tracking-tight">KitchenManager</h1>
+              <h1 className="text-xl font-bold tracking-tight">De Chef's Choice</h1>
             </div>
             <nav className="flex-1 p-4 space-y-2">
               <NavLinks />
@@ -102,7 +102,7 @@ function App() {
           <div className="md:hidden fixed top-0 left-0 right-0 h-16 bg-gray-900 text-white flex items-center justify-between px-4 z-20 shadow-md print:hidden">
             <div className="flex items-center gap-2">
               <ChefHat className="text-orange-500 w-6 h-6" />
-              <h1 className="text-lg font-bold">KitchenManager</h1>
+              <h1 className="text-lg font-bold">De Chef's Choice</h1>
             </div>
             <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               <Menu className="w-6 h-6" />

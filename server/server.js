@@ -1,6 +1,6 @@
+import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import ingredientRoutes from './routes/ingredientRoutes.js';
 import recipeRoutes from './routes/recipeRoutes.js';
 import authRoutes from './routes/authRoutes.js';
@@ -12,7 +12,6 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -30,7 +29,7 @@ app.use('/api/ingredients', requireAuth, ingredientRoutes);
 app.use('/api/recipes', requireAuth, recipeRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Kitchen Management API is running');
+  res.send('De Chef\'s Choice API is running');
 });
 
 app.listen(PORT, () => {
