@@ -246,19 +246,19 @@ export default function RecipeBuilder() {
 
   return (
     <div className="max-w-5xl mx-auto space-y-6">
-      <div className="flex justify-between items-center print:hidden">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 print:hidden">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">{editId ? 'Edit Recipe' : 'Recipe Builder'}</h2>
           <p className="text-gray-500">Design your recipe and see the true cost instantly.</p>
         </div>
-        <div className="flex gap-3">
-          <button onClick={() => window.print()} className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center gap-2">
+        <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+          <button onClick={() => window.print()} className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center justify-center gap-2 flex-1 sm:flex-none">
             <Printer className="w-4 h-4" /> Print Recipe
           </button>
-          <button onClick={downloadRecipe} className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm">
+          <button onClick={downloadRecipe} className="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors shadow-sm flex-1 sm:flex-none text-center">
             Export .csv
           </button>
-          <button onClick={saveRecipe} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center gap-2">
+          <button onClick={saveRecipe} className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-lg font-medium transition-colors shadow-sm flex items-center justify-center gap-2 w-full sm:w-auto">
             <Save className="w-5 h-5" /> Save Recipe
           </button>
         </div>
@@ -300,8 +300,8 @@ export default function RecipeBuilder() {
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-4 print:hidden">
-            <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4 print:hidden">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <h3 className="text-lg font-bold text-gray-900">Ingredients</h3>
               {recipeIngredients.length > 0 && (
                 <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">
@@ -312,12 +312,12 @@ export default function RecipeBuilder() {
                 </div>
               )}
             </div>
-            <button onClick={addIngredientRow} className="text-orange-500 hover:text-orange-600 font-medium flex items-center gap-1 text-sm bg-orange-50 px-3 py-1.5 rounded-md transition-colors">
+            <button onClick={addIngredientRow} className="text-orange-500 hover:text-orange-600 font-medium flex items-center justify-center gap-1 text-sm bg-orange-50 px-3 py-1.5 rounded-md transition-colors w-full sm:w-auto">
               <Plus className="w-4 h-4" /> Add Ingredient
             </button>
           </div>
           
-          <div className="border border-gray-200 rounded-lg overflow-hidden print:border-none">
+          <div className="border border-gray-200 rounded-lg overflow-x-auto print:border-none print:overflow-visible">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 text-sm border-b border-gray-200 print:bg-white print:border-black">
