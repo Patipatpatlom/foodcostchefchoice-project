@@ -89,7 +89,7 @@ export default function ChefChatBot() {
   }
 
   return (
-    <div className="fixed bottom-6 right-6 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 flex flex-col overflow-hidden">
+    <div className="fixed bottom-6 right-6 w-80 sm:w-96 h-[500px] max-h-[85vh] bg-white rounded-2xl shadow-2xl border border-gray-200 z-50 flex flex-col overflow-hidden">
       {/* Header */}
       <div className="bg-gray-900 text-white p-4 flex justify-between items-center">
         <div className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export default function ChefChatBot() {
       </div>
 
       {/* Messages */}
-      <div className="flex-1 p-4 overflow-y-auto bg-gray-50 h-96 flex flex-col gap-4">
+      <div className="flex-1 p-4 overflow-y-auto bg-gray-50 flex flex-col gap-4">
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
             <div className={`max-w-[85%] rounded-2xl p-3 ${msg.role === 'user' ? 'bg-orange-600 text-white rounded-tr-none' : 'bg-white border border-gray-200 text-gray-800 rounded-tl-none shadow-sm'}`}>
