@@ -8,6 +8,7 @@ export default function MasterList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
   
   // Form State
   const [editingId, setEditingId] = useState(null);
@@ -92,6 +93,12 @@ export default function MasterList() {
     }
   };
 
+  const filteredIngredients = ingredients.filter(ing => {
+    const matchesSearch = ing.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === 'All' || ing.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -100,17 +107,29 @@ export default function MasterList() {
           <p className="text-gray-500">Manage your raw ingredients and yields.</p>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <div className="relative flex-1 sm:w-64">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search ingredients..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all w-full"
+              />
             </div>
-            <input
-              type="text"
-              placeholder="Search ingredients..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all w-full sm:w-64"
-            />
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all bg-white text-gray-700 w-full sm:w-auto min-w-[160px]"
+            >
+              <option value="All">All Categories</option>
+              {['Fresh Produce', 'Proteins', 'Seafood', 'Dry Goods', 'Condiment', 'Dairy', 'Pastry', 'Beverages'].map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
           </div>
           <button 
             onClick={() => handleOpenModal()}
@@ -197,10 +216,10 @@ export default function MasterList() {
                 <tr><td colSpan="6" className="p-8 text-center text-gray-500">Loading...</td></tr>
               ) : ingredients.length === 0 ? (
                 <tr><td colSpan="6" className="p-8 text-center text-gray-500">No ingredients found. Add one to get started!</td></tr>
-              ) : ingredients.filter(ing => ing.name.toLowerCase().includes(searchQuery.toLowerCase())).length === 0 ? (
-                <tr><td colSpan="6" className="p-8 text-center text-gray-500">No ingredients match your search.</td></tr>
+              ) : filteredIngredients.length === 0 ? (
+                <tr><td colSpan="6" className="p-8 text-center text-gray-500">No ingredients match your filters.</td></tr>
               ) : (
-                ingredients.filter(ing => ing.name.toLowerCase().includes(searchQuery.toLowerCase())).map(ing => (
+                filteredIngredients.map(ing => (
                   <tr key={ing.id} className="hover:bg-gray-50/50 transition-colors">
                     <td className="p-4 font-medium text-gray-900">{ing.name}</td>
                     <td className="p-4">
