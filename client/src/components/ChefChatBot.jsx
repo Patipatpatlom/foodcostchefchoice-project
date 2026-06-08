@@ -53,9 +53,10 @@ export default function ChefChatBot() {
       setMessages(prev => [...prev, aiMessage]);
     } catch (error) {
       console.error("Chat error:", error);
+      const errorDetail = error.response?.data?.details || error.response?.data?.error || "ขออภัยครับเชฟ ระบบขัดข้องเล็กน้อย รบกวนลองใหม่อีกครั้งนะครับ";
       setMessages(prev => [...prev, {
         role: 'model',
-        parts: [{ text: "ขออภัยครับเชฟ ระบบขัดข้องเล็กน้อย รบกวนลองใหม่อีกครั้งนะครับ" }]
+        parts: [{ text: `⚠️ [System Error]: ${errorDetail}` }]
       }]);
     } finally {
       setIsLoading(false);
