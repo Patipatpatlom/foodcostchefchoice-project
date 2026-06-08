@@ -1,22 +1,5 @@
 import { GoogleGenAI } from '@google/genai';
 
-// Mock function to simulate fetching live prices
-const mockFetchLivePrice = (ingredientName) => {
-  // Generate a realistic random price between 50 and 500
-  const randomPrice = Math.floor(Math.random() * (500 - 50 + 1) + 50);
-  const sources = ['Makro Click', 'Lotus\'s', 'DIT (ราคากลาง)', 'Talaad Thai'];
-  const randomSource = sources[Math.floor(Math.random() * sources.length)];
-  
-  return {
-    status: 'success',
-    ingredient: ingredientName,
-    price: randomPrice,
-    unit: 'kg',
-    source: randomSource,
-    updatedAt: new Date().toISOString()
-  };
-};
-
 export const handleChat = async (req, res) => {
   try {
     const { messages } = req.body;
@@ -28,74 +11,73 @@ export const handleChat = async (req, res) => {
 
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
     
-    // The system prompt to enforce the persona and tool usage
-    const systemInstruction = "You are 'De Chef's Choice AI', a professional food cost assistant. When the chef asks for live, current, or recent ingredient prices, NEVER hallucinate or guess the price. You MUST call the `fetchLivePrice` tool immediately. Once you get the tool response, summarize the ingredient name, price, unit, source, and date clearly for the chef. End your response by asking 'ต้องการอัปเดตราคานี้ลงฐานข้อมูลเพื่อคำนวณต้นทุนเลยไหมครับ?'";
+    // Step 1: Web Search for Live Data
+    const searchInstruction = `You are 'De Chef's Choice AI', a professional food cost assistant.
+When the chef asks for live, current, or recent ingredient prices, you MUST use the Google Search tool to find real live prices of ingredients in Thailand (e.g., Makro, Lotus's, ตลาดไท).
+ALWAYS mention the specific price, unit (e.g., kg, piece), and the source website/market.
+End your response by asking 'ต้องการอัปเดตราคานี้ลงฐานข้อมูลเพื่อคำนวณต้นทุนเลยไหมครับ?'`;
 
-    const config = {
-      systemInstruction,
-      tools: [{
-        functionDeclarations: [{
-          name: 'fetchLivePrice',
-          description: 'Fetches live or updated market price for an ingredient',
-          parameters: {
-            type: 'OBJECT',
-            properties: {
-              ingredient_name: { type: 'STRING', description: 'Name of the ingredient to fetch price for' }
-            },
-            required: ['ingredient_name']
-          }
-        }]
-      }]
-    };
+    // Filter out messages that might have unsupported parts from old mock structure
+    const cleanMessages = messages.map(msg => ({
+      role: msg.role === 'model' ? 'model' : 'user',
+      parts: msg.parts.filter(part => part.text)
+    })).filter(msg => msg.parts.length > 0);
 
-    // First API call
-    let response = await ai.models.generateContent({
+    // Call Gemini with Google Search Grounding enabled
+    const searchResponse = await ai.models.generateContent({
       model: 'gemini-2.5-flash',
-      contents: messages,
-      config
+      contents: cleanMessages,
+      config: {
+        systemInstruction: searchInstruction,
+        tools: [{ googleSearch: {} }]
+      }
     });
 
+    const aiText = searchResponse.text;
     let rawData = null;
 
-    // Check if the model decided to call the function
-    if (response.functionCalls && response.functionCalls.length > 0) {
-      const call = response.functionCalls[0];
-      
-      if (call.name === 'fetchLivePrice') {
-        const ingredientName = call.args.ingredient_name;
-        
-        // Execute our mock tool
-        rawData = mockFetchLivePrice(ingredientName);
-        
-        // Append the model's function call to the conversation history
-        messages.push({
-          role: 'model',
-          parts: [{ functionCall: call }]
-        });
-        
-        // Append the tool response back to the conversation
-        messages.push({
-          role: 'user', // In the new SDK, tool responses are often sent as 'user' role with functionResponse part
-          parts: [{
-            functionResponse: {
-              name: call.name,
-              response: rawData
-            }
-          }]
-        });
-        
-        // Second API call to get the final text summary from the LLM
-        response = await ai.models.generateContent({
-          model: 'gemini-2.5-flash',
-          contents: messages,
-          config
-        });
+    // Step 2: JSON Data Extraction
+    // We run a second lightweight extraction pass on the generated text
+    const extractionConfig = {
+      responseMimeType: 'application/json',
+      responseSchema: {
+        type: 'OBJECT',
+        properties: {
+          hasPriceData: { type: 'BOOLEAN', description: 'True if a specific price and ingredient was found in the text' },
+          ingredient: { type: 'STRING', description: 'The exact name of the ingredient in Thai' },
+          price: { type: 'NUMBER', description: 'The numerical price found' },
+          unit: { type: 'STRING', description: 'The unit for the price (e.g., kg, g, liter, piece)' },
+          source: { type: 'STRING', description: 'The source of the price' }
+        },
+        required: ['hasPriceData']
       }
+    };
+
+    const extractResponse = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: `Extract the ingredient price data from this text: "${aiText}"`,
+      config: extractionConfig
+    });
+
+    try {
+      const extracted = JSON.parse(extractResponse.text);
+      if (extracted.hasPriceData && extracted.ingredient && extracted.price) {
+        rawData = {
+          status: 'success',
+          ingredient: extracted.ingredient,
+          price: extracted.price,
+          unit: extracted.unit || 'kg',
+          source: extracted.source || 'Web Search',
+          updatedAt: new Date().toISOString()
+        };
+      }
+    } catch (e) {
+      console.error("Extraction error", e);
     }
 
-    // Send the final text and any raw data back to the frontend
+    // Return both the natural language text (from search) and the structured JSON (for the update button)
     res.json({
-      text: response.text,
+      text: aiText,
       rawData: rawData
     });
 
