@@ -82,7 +82,11 @@ End your response by asking 'ต้องการอัปเดตราคา
     });
 
   } catch (error) {
-    console.error('Chat error:', error);
-    res.status(500).json({ error: 'Failed to process chat request' });
+    console.error('Chat error details:', error);
+    res.status(500).json({ 
+      error: 'Failed to process chat request', 
+      details: error.message,
+      stack: error.stack
+    });
   }
 };
