@@ -74,3 +74,35 @@ export const deleteIngredient = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Upsert an ingredient's price
+export const upsertIngredientPrice = async (req, res) => {
+  try {
+    const { name, purchasePrice, purchaseUnit, category = "Fresh Produce", yieldPercentage = 100 } = req.body;
+    
+    const ingredient = await prisma.ingredient.upsert({
+      where: {
+        name_userId: {
+          name: name,
+          userId: req.user.id
+        }
+      },
+      update: {
+        purchasePrice: purchasePrice,
+        purchaseUnit: purchaseUnit
+      },
+      create: {
+        name: name,
+        category: category,
+        purchasePrice: purchasePrice,
+        purchaseUnit: purchaseUnit,
+        yieldPercentage: yieldPercentage,
+        userId: req.user.id
+      }
+    });
+
+    res.json(ingredient);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};

@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import ProtectedRoute from './components/ProtectedRoute';
+import ChefChatBot from './components/ChefChatBot';
 import useAuthStore from './store/authStore';
 import api from './utils/api';
 
@@ -139,6 +140,9 @@ function App() {
             </Routes>
           </div>
         </main>
+
+        {/* Chat Bot Widget */}
+        {token && <ChefChatBot />}
       </div>
     </Router>
   );
