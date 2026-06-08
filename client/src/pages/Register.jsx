@@ -29,21 +29,26 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+    <div 
+      className="min-h-screen bg-gray-900 flex flex-col justify-center py-12 sm:px-6 lg:px-8 relative bg-cover bg-center"
+      style={{ backgroundImage: 'url("/chef_bg.png")' }}
+    >
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"></div>
+
+      <div className="relative z-10 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="flex justify-center">
-          <div className="bg-orange-500 p-3 rounded-xl shadow-sm border border-orange-400">
+          <div className="bg-orange-500 p-3 rounded-xl shadow-lg border border-orange-400/50">
             <ChefHat className="w-10 h-10 text-white" />
           </div>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-bold text-gray-900">Create an account</h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
-          Already have an account? <Link to="/login" className="font-medium text-orange-600 hover:text-orange-500">Sign in</Link>
+        <h2 className="mt-6 text-center text-3xl font-bold text-white drop-shadow-md">Create an account</h2>
+        <p className="mt-2 text-center text-sm text-gray-200 drop-shadow">
+          Already have an account? <Link to="/login" className="font-medium text-orange-400 hover:text-orange-300 transition-colors">Sign in</Link>
         </p>
       </div>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-sm sm:rounded-xl border border-gray-100 sm:px-10">
+      <div className="relative z-10 mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white/95 backdrop-blur-sm py-8 px-4 shadow-xl sm:rounded-2xl border border-white/20 sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg text-sm">
