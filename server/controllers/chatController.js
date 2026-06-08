@@ -25,7 +25,7 @@ End your response by asking 'ต้องการอัปเดตราคา
 
     // Call Gemini with Google Search Grounding enabled
     const searchResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       contents: cleanMessages,
       config: {
         systemInstruction: searchInstruction,
@@ -54,7 +54,7 @@ End your response by asking 'ต้องการอัปเดตราคา
     };
 
     const extractResponse = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-2.0-flash',
       contents: `Extract the ingredient price data from this text: "${aiText}"`,
       config: extractionConfig
     });
