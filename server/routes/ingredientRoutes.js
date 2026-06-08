@@ -4,8 +4,7 @@ import {
   createIngredient,
   getIngredientById,
   updateIngredient,
-  deleteIngredient,
-  upsertIngredientPrice
+  deleteIngredient
 } from '../controllers/ingredientController.js';
 import { requireRole } from '../middleware/requireRole.js';
 
@@ -14,8 +13,6 @@ const router = express.Router();
 router.route('/')
   .get(getIngredients)
   .post(createIngredient);
-
-router.post('/upsert-price', requireRole(['EXECUTIVE_CHEF', 'SOUS_CHEF']), upsertIngredientPrice);
 
 router.route('/:id')
   .get(getIngredientById)
